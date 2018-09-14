@@ -23,28 +23,28 @@ Query Servers Definition
 
 .. config:section:: query_servers :: Query Servers Definition
 
-    .. versionchanged:: 1.2: Added CoffeeScript query server
+    .. versionchanged:: 2.3: Changed configuration method for Query Servers
+      and Native Query Servers.
 
     CouchDB delegates computation of :ref:`design documents <ddocs>` functions
     to external query servers. The external query server is a special OS
     process which communicates with CouchDB over standard input/output using a
     very simple line-based protocol with JSON messages.
 
-    The external query server may be defined in configuration file following
+    The external query server may be defined with environment variables following
     next pattern::
 
-        [query_servers]
-        LANGUAGE = PATH ARGS
+        COUCHDB_QUERY_SERVER_LANGUAGE="PATH ARGS"
 
     Where:
 
     - ``LANGUAGE``: is a programming language which code this query server may
       execute. For instance, there are `python`, `ruby`, `clojure` and other
-      query servers in wild. This value is also used for `ddoc` field
-      ``language`` to determine which query server processes the functions.
+      query servers in wild. This value in lowercase is also used for `ddoc`
+      field ``language`` to determine which query server processes the functions.
 
       Note, that you may set up multiple query servers for the same programming
-      language, but you have to name them different (like `python-dev` etc.).
+      language, but you have to name them different (like `PYTHONDEV` etc.).
 
     - ``PATH``: is a system path to the executable binary program that runs the
       query server.
@@ -55,9 +55,8 @@ Query Servers Definition
     The default query server is written in :ref:`JavaScript <query-server/js>`,
     running via `Mozilla SpiderMonkey`_::
 
-        [query_servers]
-        javascript = /usr/bin/couchjs /usr/share/couchdb/server/main.js
-        coffeescript = /usr/bin/couchjs /usr/share/couchdb/server/main-coffee.js
+        COUCHDB_QUERY_SERVER_JAVASCRIPT="/usr/bin/couchjs /usr/share/server/main.js"
+        COUCHDB_QUERY_SERVER_COFFEESCRIPT="/usr/bin/couchjs /usr/share/server/main-coffee.js"
 
     .. _Mozilla SpiderMonkey: https://developer.mozilla.org/en/docs/SpiderMonkey
 
@@ -151,7 +150,7 @@ Native Erlang Query Server
     ``[native_query_servers]`` section::
 
         [native_query_servers]
-        erlang = {couch_native_process, start_link, []}
+        enable_erlang_query_server = true
 
     To see these changes you will also need to restart the server.
 
